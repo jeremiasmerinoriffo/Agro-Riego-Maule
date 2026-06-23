@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgroRiego Maule</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <div>
+        <p class="hello">¡Hola!</p>
+        <h1 id="screenTitle">Predio San Ignacio</h1>
+      </div>
+      <button class="icon-btn" onclick="showScreen('alertas')">🔔</button>
+    </header>
+
+    <main>
+      <section class="screen active" id="inicio">
+        <div class="card hero">
+          <div>
+            <p class="label">Estado general del predio</p>
+            <h2>✓ Todo en orden</h2>
+            <p>Tus cultivos están siendo monitoreados en tiempo real.</p>
+          </div>
+          <div class="farm">🌱</div>
+        </div>
+
+        <div class="card">
+          <p class="label">Agua disponible en estanque</p>
+          <div class="big-row">
+            <span class="water">💧</span>
+            <strong id="waterValue">65%</strong>
+          </div>
+          <p class="muted" id="waterLiters">6.500 / 10.000 L</p>
+          <div class="progress"><span id="waterBar" style="width:65%"></span></div>
+        </div>
+
+        <div class="card">
+          <div class="title-row">
+            <p class="label">Cultivos activos</p>
+            <small>3 cultivos</small>
+          </div>
+          <div class="mini-crop"><span>🍅 Tomates</span><b class="danger">Atención</b></div>
+          <div class="mini-crop"><span>🌽 Maíz</span><b class="ok">Óptimo</b></div>
+          <div class="mini-crop"><span>🥬 Lechuga</span><b class="ok">Óptimo</b></div>
+        </div>
+
+        <button class="primary" onclick="showScreen('cultivos')">Ver mis cultivos</button>
+      </section>
+
+      <section class="screen" id="cultivos">
+        <p class="sub">Resumen de tus cultivos y sensores</p>
+        <div id="cropList"></div>
+      </section>
+
+      <section class="screen" id="detalle">
+        <div class="crop-head">
+          <span id="detailEmoji">🍅</span>
+          <div>
+            <h2 id="detailName">Tomates</h2>
+            <p id="detailSector">Sector 1</p>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="active">Resumen</button>
+          <button onclick="showScreen('graficos')">Gráficos</button>
+          <button>Historial</button>
+        </div>
+
+        <div class="card">
+          <p class="label">Humedad del suelo</p>
+          <div class="humidity-row">
+            <strong id="detailHumidity">32%</strong>
+            <span id="humidityBadge" class="badge bad">Baja</span>
+          </div>
+          <p class="muted">Rango ideal: 45% - 60%</p>
+          <div class="progress"><span id="humidityBar" style="width:32%"></span></div>
+        </div>
+
+        <div class="card info">
+          <div><span>🌡️ Temperatura ambiente</span><b id="detailTemp">26°C</b></div>
+          <div><span>🕒 Último riego</span><b>Hoy, 08:30</b></div>
+          <div><span>📅 Próximo sugerido</span><b>Hoy, 17:00</b></div>
+          <div><span>🚰 Estado de válvula</span><b id="valveState">Cerrada</b></div>
+        </div>
+
+        <button class="primary" id="irrigationBtn" onclick="toggleIrrigation()">💧 Activar riego ahora</button>
+        <button class="secondary" onclick="showScreen('riego')">Configurar riego automático</button>
+      </section>
+
+      <section class="screen" id="riego">
+        <div class="card toggle">
+          <div>
+            <h3>Riego automático</h3>
+            <p>El sistema activará el riego cuando la humedad esté bajo el umbral definido.</p>
+          </div>
+          <label class="switch">
+            <input id="autoSwitch" type="checkbox" checked />
+            <span></span>
+          </label>
+        </div>
+
+        <div class="card slider-card">
+          <p>Umbral mínimo de humedad</p>
+          <strong><span id="thresholdValue">35</span>%</strong>
+          <input type="range" min="10" max="60" value="35" oninput="updateRange('thresholdValue', this.value)" />
+        </div>
+
+        <div class="card slider-card">
+          <p>Duración del riego</p>
+          <strong><span id="durationValue">15</span> minutos</strong>
+          <input type="range" min="5" max="30" value="15" oninput="updateRange('durationValue', this.value)" />
+        </div>
+
+        <div class="card slider-card">
+          <p>Frecuencia máxima</p>
+          <strong><span id="freqValue">2</span> veces al día</strong>
+          <input type="range" min="1" max="4" value="2" oninput="updateRange('freqValue', this.value)" />
+        </div>
+
+        <button class="primary" onclick="saveConfig()">Guardar configuración</button>
+      </section>
+
+      <section class="screen" id="alertas">
+        <div class="alert orange">💧 <div><b>Humedad baja en tomates</b><p>Sector 1 - 32% · Hoy, 10:15</p></div></div>
+        <div class="alert blue">🪣 <div><b>Nivel de estanque bajo</b><p>Quedan 6.500 L (65%) · Hoy, 09:40</p></div></div>
+        <div class="alert green">✅ <div><b>Riego activado automáticamente</b><p>Maíz - Sector 2 · Hoy, 08:45</p></div></div>
+        <div class="alert red">📡 <div><b>Sensor de lechuga sin conexión</b><p>Sector 3 · Ayer, 18:30</p></div></div>
+      </section>
+
+      <section class="screen" id="graficos">
+        <div class="card">
+          <div class="title-row">
+            <div>
+              <p class="label">Gráfico de humedad</p>
+              <h3 id="chartCrop">Tomates - Sector 1</h3>
+            </div>
+            <button class="small-btn" onclick="randomChart()">Actualizar</button>
+          </div>
+          <canvas id="chart" width="320" height="220"></canvas>
+        </div>
+
+        <div class="card">
+          <p class="label">Lectura simulada en tiempo real</p>
+          <h2 id="liveReading">32% humedad</h2>
+          <p class="muted">Los valores cambian para simular sensores conectados.</p>
+        </div>
+      </section>
+
+      <section class="screen" id="ajustes">
+        <div class="card menu" onclick="openSetting('perfil')">👤 Perfil <span>›</span></div>
+        <div class="card menu" onclick="openSetting('notificaciones')">🔔 Notificaciones <span>›</span></div>
+        <div class="card menu" onclick="openSetting('sensores')">📡 Dispositivos y sensores <span>›</span></div>
+        <div class="card menu" onclick="openSetting('unidades')">⚙️ Unidades de medida <span>›</span></div>
+        <div class="card menu" onclick="openSetting('soporte')">❓ Ayuda y soporte <span>›</span></div>
+      </section>
+
+      <section class="screen" id="ajusteDetalle">
+        <button class="back-btn" onclick="showScreen('ajustes')">‹ Volver a ajustes</button>
+        <div id="settingContent"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button onclick="showScreen('inicio')" class="nav active">⌂<span>Inicio</span></button>
+      <button onclick="showScreen('cultivos')" class="nav">🌿<span>Cultivos</span></button>
+      <button onclick="showScreen('riego')" class="nav">💧<span>Riego</span></button>
+      <button onclick="showScreen('alertas')" class="nav">🔔<span>Alertas</span></button>
+      <button onclick="showScreen('ajustes')" class="nav">⚙<span>Ajustes</span></button>
+    </nav>
+
+    <div id="toast"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
