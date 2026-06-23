@@ -36,7 +36,7 @@ function openSetting(type){
         <h2 class="setting-title">Perfil del predio</h2>
         <p class="muted">Datos principales del agricultor y predio monitoreado.</p>
         <label>Nombre del predio</label>
-        <input class="setting-input" value="Predio San Ignacio">
+        <input class="setting-input" value="Predio 1">
         <label>Responsable</label>
         <input class="setting-input" value="Fernando Torres">
         <label>Ubicación</label>
